@@ -10,13 +10,13 @@
 	drag: function(e,dragData)
 		- e: mousemove event
 		- dragData
-				. [key1,key2,...]: arrays of all offsets between element and document.
-				. timing: array of times mousemove was called, in epoch millis.
-				. length: function returning current length of offset data arrays.
-				. diff: function(a,b,index) returning subtraction of offset array data
-				    at index between nodes stored under dragData as keys a and b.
-				. first: function(a,b) performing diff with index = 0.
-				. last: function(a,b) performing diff with index = dragData.length-1.
+			  . [key1,key2,...]: arrays of all offsets between element and document.
+			  . timing: array of times mousemove was called, in epoch millis.
+			  . length: function returning current length of offset data arrays.
+			  . diff: function(a,b,index) returning subtraction of offset array data
+			      at index between nodes stored under dragData as keys a and b.
+			  . first: function(a,b) performing diff with index = 0.
+			  . last: function(a,b) performing diff with index = dragData.length-1.
 	
 	mouseup: event on mouse up.
 	
