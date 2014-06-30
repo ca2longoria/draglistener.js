@@ -112,12 +112,17 @@ Element.prototype.addDragListener =
 				dragData[p] = offsetArrays[p].slice(0);
 			dragData.timing = timingArray.slice(0);
 			
-			drag(e,dragData);
+			// Call with Element as 'this' in function.
+			self._drag = drag;
+			self._drag(e,dragData);
+			delete self._drag;
 		});
 		
 		document.addEventListener('mouseup',endFunc=function endFunc(e)
 		{
-			mouseup(e);
+			self._mouseup = mouseup;
+			self._mouseup(e);
+			delete self._mouseup;
 			
 			dragging = false;
 			document.removeEventListener('mousemove',dragFunc);
@@ -129,7 +134,9 @@ Element.prototype.addDragListener =
 		
 		// Run the mousedown function.
 		pushCurrent(e);
-		mousedown(e);
+		this._mousedown = mousedown;
+		this._mousedown(e);
+		delete this._mousedown;
 		
 		// Prevent highlight selection, by default.
 		if (!params || !params.selection)
