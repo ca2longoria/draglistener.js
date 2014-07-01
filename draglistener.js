@@ -81,8 +81,8 @@ Element.prototype.addDragListener =
 				offsetArrays[p].push(trueOffset(relatedNodes[p]));
 			
 			offsetArrays.mouse.push({
-				x:parseFloat(e.pageX) + parseFloat(document.body.scrollLeft),
-				y:parseFloat(e.pageY) + parseFloat(document.body.scrollTop)
+				x:parseFloat(e.pageX), //+ parseFloat(document.body.scrollLeft),
+				y:parseFloat(e.pageY) //+ parseFloat(document.body.scrollTop)
 			});
 			
 			timingArray.push(new Date().getTime());
@@ -97,20 +97,19 @@ Element.prototype.addDragListener =
 				diff:function(a,b,index)
 				{
 					return {
-						x:this[a][index].x-this[b][index].x,
-						y:this[a][index].y-this[b][index].y
+						x:this[a].get(index).x-this[b].get(index).x,
+						y:this[a].get(index).y-this[b].get(index).y
 					};
 				},
 				first:function(a,b){return this.diff(a,b,0)},
 				last:function(a,b){return this.diff(a,b,this.length()-1)}
 			};
 			
-			// NOTE: Oh boy.  Full copy of all arrays *every mousemove*.  This needs
-			//   to be made into a read-only Array accessor of sorts.  I'll leave it
-			//   at this, for now, though.
+			// Accessors are used, as opposed to the original arrays, as they are
+			// representative of data *history*, and that must remain unchanged.
 			for (var p in offsetArrays)
-				dragData[p] = offsetArrays[p].slice(0);
-			dragData.timing = timingArray.slice(0);
+				dragData[p] = new ImmutableArrayAccessor(offsetArrays[p]);
+			dragData.timing = new ImmutableArrayAccessor(timingArray);
 			
 			// Call with Element as 'this' in function.
 			self._drag = drag;
@@ -156,4 +155,60 @@ Element.prototype.removeDragListener = function(key)
 	document.removeEventListener('mousemove',a.dragFunc);
 	document.removeEventListener('mouseup',a.endFunc);
 }
+
+
+
+function ImmutableArrayAccessor(arr)
+{
+	this.arr = arr;
+}
+
+ImmutableArrayAccessor.prototype.get = function(index)
+{ return this.arr[index]; };
+
+ImmutableArrayAccessor.prototype.length = function()
+{ return this.arr.length; };
+
+ImmutableArrayAccessor.prototype.concat = function()
+{ return Array.prorotype.concat.apply(this.arr,arguments); };
+
+ImmutableArrayAccessor.prototype.join = function(sep)
+{ return this.arr.join(sep); };
+
+ImmutableArrayAccessor.prototype.slice = function(a,b)
+{ return this.arr.slice(a,b); };
+
+ImmutableArrayAccessor.prototype.toString = function()
+{ return this.arr.toString(); };
+
+ImmutableArrayAccessor.prototype.toLocaleString = function()
+{ return this.arr.toLocaleString(); };
+
+ImmutableArrayAccessor.prototype.indexOf = function(val,from)
+{ return this.arr.indexOf(val,from); };
+
+ImmutableArrayAccessor.prototype.lastIndexOf = function(val,from)
+{ return this.arr.lastIndexOf(val,from); };
+
+ImmutableArrayAccessor.prototype.forEach = function(callback,thisVal)
+{ return this.arr.forEach(callback,thisVal); };
+
+ImmutableArrayAccessor.prototype.every = function(callback,thisVal)
+{ return this.arr.every(callback,thisVal); };
+
+ImmutableArrayAccessor.prototype.some = function(func,thisVal)
+{ return this.arr.some(func,thisVal); }
+
+ImmutableArrayAccessor.prototype.filter = function(func,thisVal)
+{ return this.arr.filter(func,thisVal); };
+
+ImmutableArrayAccessor.prototype.map = function(func,thisVal)
+{ return this.arr.map(func,thisVal); };
+
+ImmutableArrayAccessor.prototype.reduce = function(func,initialVal)
+{ return this.arr.reduce(func,initialVal); };
+
+ImmutableArrayAccessor.prototype.reduceRight = function(func,initialVal)
+{ return this.arr.reduceRight(func,initialVal); };
+
 
