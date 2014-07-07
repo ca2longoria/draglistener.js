@@ -66,6 +66,9 @@ Element.prototype.addDragListener =
 	
 	this.addEventListener('mousedown',startFunc=function(e)
 	{
+		if (dragging)
+			return;
+		
 		dragging = true;
 		
 		offsetArrays = {mouse:[]};
@@ -170,7 +173,7 @@ ImmutableArrayAccessor.prototype.length = function()
 { return this.arr.length; };
 
 ImmutableArrayAccessor.prototype.concat = function()
-{ return Array.prorotype.concat.apply(this.arr,arguments); };
+{ return Array.prototype.concat.apply(this.arr,arguments); };
 
 ImmutableArrayAccessor.prototype.join = function(sep)
 { return this.arr.join(sep); };
